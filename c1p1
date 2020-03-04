@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <stack>
+#include <assert.h>
+using namespace std;
+
+class MyStack {
+private:
+	stack<int> stackData;
+	stack<int> stackMin;
+
+public://压栈
+	void push(int newNum) {
+		if (stackMin.empty()) {
+			stackMin.push(newNum);
+		}
+		else if (newNum <= stackMin.top()) {  //如果新的数小于stackMin的栈顶元素
+			stackMin.push(newNum);
+		}
+		stackData.push(newNum);
+	}
+
+public://出栈
+	int pop() {
+		if (stackData.empty()) {
+			cout << "Your stack is empty." << endl;
+		}
+		int value = stackData.top();
+		if (value == stackMin.top()) {
+			stackMin.pop();
+		}
+		return value;
+		//cout << value << endl;
+	}
+
+public://获取最小值
+	int getMin() {
+		if (stackMin.empty()) {
+			cout << "Wrong" << endl;
+		}
+		return stackMin.top();
+	}
+};  //此处的 ；别忘记
+
+
+int main() {
+
+	MyStack s1;
+	cout << "需要输入的数字个数" << endl;
+	int a;
+	cin >> a;
+	int newNum;
+	cout << "输入压栈数字" << endl;
+	for (int i = 1; i <= a; i++) {  //一个小循环，向栈中压入多个数字
+		cin >> newNum;
+		s1.push(newNum);
+	}
+	int min = s1.getMin();
+	cout << "the minumum number is " << min << endl;
+}
