@@ -1,0 +1,55 @@
+//成功生成，但是调试不成功，
+//将一个无效参数传递给了将无效参数视为严重错误的函数 res[index++] = arr[qmax.front()];
+
+#include<iostream>
+#include<deque>
+
+using namespace std;
+
+int* getMaxWindows(int arr[], int len, int w) {
+	//arr为源数组；len为数组的长度；w为窗口的大小
+	if (NULL==arr || w < 1 || len < w) {
+		return NULL;
+	}
+	deque<int> qmax;
+	int* res = new(nothrow) int[len - w + 1];//////
+	if (NULL == res)
+	{
+		cout << "Memory allocated failed!" << endl;
+		return NULL;
+	}
+	int index = 0;
+	for (int i = 0; i < len; i++) {
+		while (!qmax.empty() && arr[qmax.back()] <= arr[i]) {
+			qmax.pop_back();//应该弹出队列队尾元素，所以应该是别的语句
+		}
+		qmax.push_back(i);
+		if (qmax.front() = i - w) {
+			qmax.pop_front();//弹出队列头部元素，是pop（），没错。
+		}
+		if (i >= w - 1) {
+			res[index++] = arr[qmax.front()];
+		}
+	}
+	return res;
+}
+
+		
+/*int main() {
+	int a[8] = { 4, 3, 5, 4, 3, 3, 6, 7 };
+	//solution s;
+	int *res = getMaxWindows(a, 8, 3);
+	for (int i = 0; i < 6; i++) {
+		cout << "窗口中最大值为" << res[i] << endl;
+	}
+	return 0;
+		
+ }*/
+int main()
+{
+	int arr[] = { 4,3,5,4,3,3,6,7 };
+	int* res = getMaxWindows(arr, 8, 3);
+	for (int i = 0; i < 6; i++)
+		cout << res[i] << endl;
+	return 0;
+}
