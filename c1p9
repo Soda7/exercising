@@ -1,0 +1,204 @@
+#include<iostream>
+#include<stdio.h>
+#include<string>
+#include<queue>
+using namespace std;
+
+class Pet {//宠物、狗、猫的类
+private:
+	string type;
+public:
+	Pet(string type) {
+		this->type = type;//箭头是什么意思
+	}
+public:
+	Pet() {}
+	//在子类的构造函数中调用父类的有参构造函数就是下面这么用
+	//Cat():Pet("Cat"){};
+	string getPetType() {
+		return this->type;
+	}
+};
+
+class Dog : public Pet {
+public:
+	Dog() :Pet("Dog") {}
+
+};
+class Cat : public Pet {
+public:
+	Cat() :Pet("Cat") {}
+};
+
+
+
+class PetEnterQueue {//将不同的实例盖上时间戳，不改变用户本身的类 => 所以定义一个新的类
+private:
+	Pet pet;
+	long timeCount;
+public:
+	//构造函数后面加了:是初始化列表，初始化myPet为p
+	PetEnterQueue(Pet pet, long count):pet(pet) {
+		//java是这么初始化的 this->pet = pet;
+		this->timeCount = count;//都用count容易混淆吧？
+	}
+	Pet getPet() {
+		return pet;
+	}
+	long getTimeCount() {
+		return timeCount;
+	}
+	string getEnterPetType() {
+		return pet.getPetType();
+	}
+};
+
+
+
+class DogCatQueue {
+private:
+	queue<PetEnterQueue> dogQ;
+	queue<PetEnterQueue> catQ;
+	long timeCount;
+public:
+	DogCatQueue() {  //整体代码
+		timeCount = 0;
+	}
+public:
+	void add(Pet pet) {//将cat类或dog类放入队列中
+		if (pet.getPetType()._Equal("dog")) {  //.Equal换成==
+			dogQ.push(PetEnterQueue(pet, this->timeCount++));
+		}
+		else if (pet.getPetType()._Equal("cat")) {
+			catQ.push(PetEnterQueue(pet, this->timeCount++));
+		}
+		else {
+			//cout << "error,not dog or cat" << endl;
+			throw runtime_error("err, not dog or cat!");
+		}
+	}
+public:
+	Pet pollAll() {    //将队列中的所有实例按照进队的先后顺序依次弹出
+		if (!this->dogQ.empty() && !this->catQ.empty()) {
+			if (this->dogQ.front().getTimeCount() < this->catQ.front().getTimeCount()) {
+				Pet tc;
+				tc = dogQ.front().getPet();
+				dogQ.pop();
+				return tc;
+			}
+			else {
+				Pet tc;
+				tc = catQ.front().getPet();
+				catQ.pop();
+				return tc;
+				
+			}
+		}
+		else if (!this->dogQ.empty()) {
+			Pet tc;
+			tc = dogQ.front().getPet();
+			dogQ.pop();
+			return tc;
+
+		}
+		else if (!this->catQ.empty()) {
+			Pet tc;
+			tc = catQ.front().getPet();
+			catQ.pop();
+			return tc;;
+		}
+		else {
+			cout << "error,queue is empty!" << endl;
+			throw runtime_error("error,queue is empty!");
+		}
+	}
+public:
+	Dog pollDog() {//将dog类的实例按照进队列的先后顺序依次弹出；
+		/*class CatDogQ
+		{
+		private:
+			queue<PetTimeStamp> dogQ, catQ;
+			long timeStamp;
+		public:
+			CatDogQ() {
+				timeStamp = 0;
+			}
+			void push(Pet pet);
+			Pet popAll();
+			Dog popDog();
+			Cat popCat();
+			bool isEmpty();
+			bool isDogEmpty();
+			bool isCatEmpty();
+		};*/
+		//Dog CatDogQueue::pollDog()
+		if (dogQ.empty()) {
+			Pet tcP = dogQ.front().getPet();
+			Dog tcD;
+			Pet* p = &tcD;/////这部分的指针没明白
+			*p = tcP;
+			dogQ.pop();
+			return tcD;
+
+		
+		}
+		else {
+			//cout << "dog queue is empty" << endl;
+			throw runtime_error("Error,empty dog queue!");
+		}
+	}
+
+public:
+	Cat pollCat() {//将cat类的实例按照进队列的先后顺序依次弹出；
+		if (!this->catQ.empty()) {
+			Pet tcP = catQ.front().getPet();
+			Cat tcC;
+			Pet* p = &tcC;/////这部分的指针没明白
+			*p = tcP;
+			catQ.pop();
+			return tcC;
+		}
+		else {
+			//cout << "cat queue is empty" << endl;
+			throw runtime_error("Error,empty cat queue!");
+		}
+	}
+public:
+	bool isEmpty() {//检查队列中是否还有dog或cat实例
+		return dogQ.empty() && this->catQ.empty();
+	}
+	bool isDogEmpty() {//检查队列中是否还有dog实例
+		return dogQ.empty();
+	}
+	bool isCatEmpty() {//检查队列中是否还有cat实例
+		return catQ.empty();
+	}
+}; 
+
+
+int main()
+{
+	DogCatQueue cdq;
+	if (cdq.isEmpty())
+		cout << "All queue is empty!" << endl;
+	cdq.add(Dog());
+	if (!cdq.isDogEmpty())
+		cout << "Dog queue is not empty!" << endl;
+	if (!cdq.isCatEmpty())
+		cout << "Cat queue is not empty!" << endl;
+	for (int i = 0; i < 2; i++)
+	{
+		cdq.add(Cat());
+		cdq.add(Dog());
+	}
+	cout << "popAll:" << cdq.pollAll().getPetType() << endl;
+	cout << "popDog:" << cdq.pollDog().getPetType() << endl;
+	cout << "popCat:" << cdq.pollCat().getPetType() << endl;
+	cout << "popAll:" << cdq.pollAll().getPetType() << endl;
+	cout << "popAll:" << cdq.pollAll().getPetType() << endl;
+
+	if (cdq.isEmpty())
+		cout << "All queue is empty!" << endl;
+
+	return 0;
+}
