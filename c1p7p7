@@ -1,0 +1,50 @@
+#include<iostream>
+#include<stdio.h>
+#include<stack>
+using namespace std;
+
+int getAndRemoveLastElement(stack<int> &stackData) {//移除并返回当前栈顶元素  【&】
+	//这里需要注意的一点是因为在C++中参数传递时需要传引用，
+	//否则第二次递归时，使用的栈是未变化的栈，会导致错误结果！！！
+
+	int result = stackData.top();
+	stackData.pop();
+	if (stackData.empty()) {
+		return result;
+	}
+	else {
+		int last = getAndRemoveLastElement(stackData);
+		stackData.push(result);
+		return last;
+	}
+}
+
+void reverse(stack<int> &stackData) {  // 【&】
+	if (stackData.empty()) {
+		return;
+	}
+	int i = getAndRemoveLastElement(stackData);
+	reverse(stackData);
+	stackData.push(i);
+}
+
+int main() {
+	int n1,n2, num;
+	stack<int> s;
+	cout << "输入元素的个数" << endl;
+	cin >> n1;
+	n2 = n1;
+	while (n1) {
+		cin >> num;
+		s.push(num);
+		n1--;
+	}
+	reverse(s);
+	while (n2) {
+		cout << s.top() << endl;
+		s.pop();
+		n2--;
+	}
+	getchar();//getchar()可以不写
+	return 0;
+}
