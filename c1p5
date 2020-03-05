@@ -1,0 +1,57 @@
+#include<iostream>
+#include<stdio.h>
+#include<stack>
+using namespace std;
+
+class TwoStacksQueue {
+public:
+	stack<int> stackPush;
+	stack<int> stackPop;
+
+private:
+	void pushToPop() {
+		if (stackPop.empty()) {
+			while (!stackPush.empty()) {
+				stackPop.push(stackPush.top());
+				stackPush.pop();//将压入栈的栈顶元素push进弹出栈，同时删除栈顶元素
+			}
+		}
+	}
+
+public:
+	void push(int pushNum) {//定义压入栈
+		stackPush.push(pushNum);
+		pushToPop(); //for what?
+	}
+
+public:
+	void pop() {
+		if (stackPush.empty() && stackPop.empty()) {
+			cout << "wrong information! Queue is empty!" << endl;
+		}
+		pushToPop();//for what?
+		return stackPop.pop();
+	}
+
+public:
+	int top() {
+		if (stackPush.empty() && stackPop.empty()) {
+			cout << "wrong information! Queue is empty!" << endl;
+		}
+		pushToPop();
+		return stackPop.top();
+	}
+};
+
+int main() {
+	TwoStacksQueue s;
+	int num, pushNum;
+	cout << "需要输入数字的个数" << endl;
+	cin >> num;
+	cout << "输入的数字" << endl;
+	for (int i = 1; i <= num; ++i) {
+		cin >> pushNum;
+		s.push(pushNum);
+	}
+	cout<<"队列顶元素"<<s.top()<<endl;
+}
