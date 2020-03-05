@@ -1,0 +1,42 @@
+#include <iostream>
+#include<stack>
+using namespace std;
+
+class solution {
+public:
+	static void stackByStack(stack<int> &s) {//&引用传入函数参数
+		stack<int> help;
+		while (!s.empty()) {
+			int cur = s.top();
+			s.pop();
+			while (!help.empty() && help.top() < cur) {
+				s.push(help.top());
+				help.pop();
+			}
+			help.push(cur);
+		}
+		while (!help.empty()) {
+			s.push(help.top());
+			help.pop();
+		}
+	}
+};
+
+int main() {
+	solution st;
+	stack<int> a;
+	int num;
+	for (int i = 1; i <= 5; i++) {
+		cout << "需要输入的数字" << endl;
+		cin >> num;
+		a.push(num);
+	}
+	st.stackByStack(a);
+	cout << "stack的排序为" << endl;
+	for (int i = 1; i <= 5; i++) {
+		//cout<<"需要输入的数字"<<endl;
+		cout << a.top() << endl;
+		a.pop();
+	}
+}
+		
